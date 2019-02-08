@@ -1,0 +1,30 @@
+package com.github.rthoth.zerializer
+
+abstract class Builder[E](version: Option[Int]) {
+
+}
+
+class Builder0[E](version: Option[Int]) extends Builder[E](version) {
+  def field[F](serializer: TypeSerializer[F]): Builder1[E, F] = {
+    new Builder1(version, Tuple1(serializer))
+  }
+}
+
+[1..21#class Builder1[E, [#F1#]](version: Option[Int], serializers: Tuple1[[#TypeSerializer[F1]#]]) extends Builder[E](version) {
+
+  def field[F](serializer: TypeSerializer[F]): Builder2[E, [#F1#], F] = {
+    new Builder2(version, ([#serializers._1#], serializer))
+  }
+
+  def build(apply: Function1[[#F1#], E], unapply: Function1[E, [#F1#]]): TypeSerializer[E] = {
+    ???
+  }
+}
+#
+]
+class Builder22[E, [#F1#]](version: Option[Int], serializers: Tuple22[[#TypeSerializer[F1]#]]) extends Builder[E](version) {
+
+  def build(apply: Function22[[#F1#], E], unapply: Function1[E, Tuple22[[#F1#]]]): TypeSerializer[E] = {
+    ???
+  }
+}
