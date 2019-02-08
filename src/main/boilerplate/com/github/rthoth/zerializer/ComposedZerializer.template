@@ -1,0 +1,142 @@
+package com.github.rthoth.zerializer
+
+import java.io._
+
+abstract class ComposedZerializer[E <: AnyRef](version: Option[Byte], protected val _emptyValue: Option[E])
+    extends SimpleZerializer[E] {
+
+  def emptyValue: E = _emptyValue match {
+    case Some(value) => value
+    case None => throw new ZerializerException.EmptyValue
+  }
+
+  def isEmpty(value: E) = _emptyValue match {
+    case Some(empty) => value == empty
+    case _ => false
+  }
+
+  protected def readField[F](status:  ComposedHeader.Status, serializer: Zerializer[F, F], input: DataInput): F = {
+    status match {
+      case ComposedHeader.NotEmpty => serializer.read(input)
+      case ComposedHeader.Null => null.asInstanceOf[F]
+      case ComposedHeader.Empty => serializer.emptyValue
+    }
+  }
+
+  protected def fieldStatus[F](index: Int, value: F, serializer: Zerializer[F, F], builder: ComposedHeader.Builder): Unit = {
+    if (value != null) {
+      if (!serializer.isEmpty(value)) {
+        builder.status(index, ComposedHeader.NotEmpty)
+      } else {
+        builder.status(index, ComposedHeader.Empty)
+      }
+    } else {
+      builder.status(index, ComposedHeader.Null)
+    }
+  }
+
+  protected def writeField[F](status: ComposedHeader.Status, field: F, serializer: Zerializer[F, F], output: DataOutput): Unit = {
+    if (status == ComposedHeader.NotEmpty)
+      serializer.write(field, output)
+  }
+}
+
+class ComposedZerializer1[E <: AnyRef, F](version: Option[Byte], _emptyValue: Option[E], serializer: Zerializer[F, F], apply: F => E, unapply: E => Option[F])
+    extends ComposedZerializer[E](version, _emptyValue) {
+
+  def copy(_1: Zerializer[F, F] = serializer): ComposedZerializer1[E, F] = {
+    new ComposedZerializer1(version, _emptyValue, _1, apply, unapply)
+  }
+
+  def read(input: DataInput): E = {
+    val header = ComposedHeader(version, input)
+
+    header.status match {
+      case ComposedHeader.NotEmpty => 
+        val field = readField(header.status(1), serializer, input)
+        apply(field)
+
+      case ComposedHeader.Null =>
+        null.asInstanceOf[E]
+
+      case ComposedHeader.Empty =>
+        emptyValue
+    }
+  }
+
+  def write(value: E, output: DataOutput): Unit = {
+    val builder = new ComposedHeader.Builder(version)
+
+    unapply(value) match {
+      case Some(field) =>
+        if (!isEmpty(value)) {
+          builder.status(ComposedHeader.NotEmpty)
+          fieldStatus(1, field, serializer, builder)
+          builder.write(output)
+          writeField(builder.status(1), field, serializer, output)
+        } else {
+          builder.status(ComposedHeader.Empty)
+          builder.write(output)
+        }
+
+      case None =>
+        builder.status(ComposedHeader.Null)
+        builder.write(output)
+    }
+  }
+}
+
+[2..22#class ComposedZerializer1[E <: AnyRef, [#F1#]](version: Option[Byte], _emptyValue: Option[E], serializers: Tuple1[[#Zerializer[F1, F1]#]], apply: Function1[[#F1#], E], unapply: Function##1[E, Option[Tuple1[[#F1#]]]])
+    extends ComposedZerializer[E](version, _emptyValue) {
+
+  def copy([#_1: Zerializer[F1, F1] = serializers._1#]): ComposedZerializer1[E, [#F1#]] = {
+    new ComposedZerializer1(version, _emptyValue, serializers.copy([#_1 = _1#]), apply, unapply)
+  }
+
+
+  def read(input: DataInput): E = {
+    val header = ComposedHeader(version, input)
+
+    header.status match {
+      case ComposedHeader.NotEmpty =>
+
+        [#val f1 = readField(header.status(1), serializers._1, input)#
+        ]
+
+        apply([#f1#])
+
+      case ComposedHeader.Null =>
+        null.asInstanceOf[E]
+
+      case ComposedHeader.Empty =>
+        emptyValue
+    }
+  }
+
+  def write(value: E, output: DataOutput): Unit = {
+    val builder = new ComposedHeader.Builder(version)
+
+    unapply(value) match {
+      case Some(fields) =>
+        if (!isEmpty(value)) {
+          builder.status(ComposedHeader.NotEmpty)
+          [#fieldStatus(1, fields._1, serializers._1, builder)#
+          ]
+
+          builder.write(output)
+
+          [#writeField(builder.status(1), fields._1, serializers._1, output)#
+          ]
+        } else {
+          builder.status(ComposedHeader.Empty)
+          builder.write(output)
+        }
+
+      case None =>
+        builder.status(ComposedHeader.Null)
+        builder.write(output)
+    }
+  }
+
+}#
+]

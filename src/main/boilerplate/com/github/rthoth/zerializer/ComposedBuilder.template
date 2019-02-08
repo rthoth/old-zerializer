@@ -1,0 +1,59 @@
+package com.github.rthoth.zerializer
+
+import scala.collection._
+import scala.collection.generic._
+
+abstract class BaseComposedBuilder[E <: AnyRef](version: Option[Byte], protected val emptyValue: Option[E])
+
+class ComposedBuilder[E <: AnyRef](version: Option[Byte] = None, emptyValue: Option[E] = None)
+    extends BaseComposedBuilder[E](version, emptyValue) {
+
+  def field[F](implicit serializer: Zerializer[F, F]): ComposedBuilder1[E, F] = {
+    new ComposedBuilder1(version, emptyValue, serializer)
+  }
+}
+
+class ComposedBuilder1[E <: AnyRef, F1](version: Option[Byte] = None, emptyValue: Option[E], serializer: Zerializer[F1, F1])
+    extends BaseComposedBuilder[E](version, emptyValue) {
+
+  def field[F](implicit serializer: Zerializer[F, F]): ComposedBuilder2[E, F1, F] = {
+    new ComposedBuilder2(version, emptyValue, (this.serializer, serializer))
+  }
+
+  def build(apply: F1 => E, unapply: E => Option[F1]): ComposedZerializer1[E, F1] = {
+    new ComposedZerializer1(version, emptyValue, serializer, apply, unapply)
+  }
+
+  def rw(apply: F1 => E)(unapply: E => Option[F1]): ComposedZerializer1[E, F1] = {
+    new ComposedZerializer1(version, emptyValue, serializer, apply, unapply)
+  }
+}
+
+[2..21#class ComposedBuilder1[E <: AnyRef, [#F1#]](version: Option[Byte], emptyValue: Option[E], serializers: Tuple1[[#Zerializer[F1, F1]#]])
+    extends BaseComposedBuilder[E](version, emptyValue) {
+
+  def field[F](implicit serializer: Zerializer[F, F]): ComposedBuilder2[E, [#F1#], F] = {
+    new ComposedBuilder2(version, emptyValue, ([#serializers._1#], serializer))
+  }
+
+  def build(apply: Function1[[#F1#], E], unapply: Function##1[E, Option[Tuple1[[#F1#]]]]): ComposedZerializer1[E, [#F1#]] = {
+    new ComposedZerializer1(version, emptyValue, serializers, apply, unapply)
+  }
+
+  def rw(apply: Function1[[#F1#], E])(unapply: Function##1[E, Option[Tuple1[[#F1#]]]]): ComposedZerializer1[E, [#F1#]] = {
+    new ComposedZerializer1(version, emptyValue, serializers, apply, unapply)
+  }
+}
+#
+]
+class ComposedBuilder22[E <: AnyRef, [#F1#]](version: Option[Byte], emptyValue: Option[E], serializers: Tuple22[[#Zerializer[F1, F1]#]])
+    extends BaseComposedBuilder[E](version, emptyValue) {
+
+  def build(apply: Function22[[#F1#], E], unapply: Function1[E, Option[Tuple22[[#F1#]]]]): ComposedZerializer22[E, [#F1#]] = {
+    new ComposedZerializer22(version, emptyValue, serializers, apply, unapply)
+  }
+
+  def rw(apply: Function22[[#F1#], E])(unapply: Function1[E, Option[Tuple22[[#F1#]]]]): ComposedZerializer22[E, [#F1#]] = {
+    new ComposedZerializer22(version, emptyValue, serializers, apply, unapply)
+  }
+}

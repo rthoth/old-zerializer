@@ -10,3 +10,9 @@ lazy val root = (project in file("."))
     )
   )
   .enablePlugins(spray.boilerplate.BoilerplatePlugin)
+
+lazy val sample = (project in file("sample"))
+  .settings(
+    name := "zerializer-sample",
+    version := "1.0.0-SNAPSHOT"
+  ).dependsOn(root)
