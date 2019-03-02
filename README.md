@@ -2,7 +2,7 @@
 
 **Zerializer** is a Scala based binary serialization library, it uses [DataInput](https://docs.oracle.com/javase/8/docs/api/index.html?java/io/DataInput.html "See javadoc") and [DataOutput](https://docs.oracle.com/javase/8/docs/api/index.html?java/io/DataOutput.html "See javadoc"). So, let's code!
 
-First we need import:
+First we need to import:
 
 ```scala
 import com.github.rthoth.zerializer._
@@ -176,7 +176,7 @@ it's also very common an object to contain fields of the same type and if you wo
   assert(serializedTag == html)
 ```
 
-## Buil-in
+## Built-in
 
 Scala has classes like `Option`, `Try` and `Either`. They are useful on many situations and **Zerializer** has special *serializers* for them.
 
