@@ -66,20 +66,27 @@ package object zerializer {
       throw throwable
   }
 
+  implicit def eitherZerializer[L, R](implicit lZerializer: Zerializer[L, L], rZerializer: Zerializer[R, R]): SimpleZerializer[Either[L, R]] = {
+    new EitherZerializer(lZerializer, rZerializer)
+  }
+
   implicit def optionZerializer[E](implicit serializer: Zerializer[E, E]): SimpleZerializer[Option[E]] = {
     new OptionZerializer(serializer)
   }
 
-  implicit def tryZerializer[E](implicit serializer: Zerializer[E, E], throwableZerializer: Zerializer[Throwable, Throwable] = ThrowableZerializer): SimpleZerializer[Try[E]] = {
+  implicit def tryZerializer[E](
+    implicit serializer: Zerializer[E, E],
+    throwableZerializer: Zerializer[Throwable, Throwable] = new ReflectionThrowableZerializer
+  ): SimpleZerializer[Try[E]] = {
     new TryZerializer(serializer, throwableZerializer)
   }
 
-  def mapField[K, V, M <: MapLike[K, V, _]](implicit kZ: Zerializer[K, K], vZ: Zerializer[V, V], canBuild: CanBuild[(K, V), M]):
+  def mapZerializer[K, V, M <: MapLike[K, V, _]](implicit kZ: Zerializer[K, K], vZ: Zerializer[V, V], canBuild: CanBuild[(K, V), M]):
       SimpleZerializer[M] = {
     new MapLikeZerializer(kZ, vZ)
   }
 
-  def traversableField[E, T <: TraversableOnce[E]](implicit serializer: Zerializer[E, E], canBuild: CanBuild[E, T]):
+  def traversableZerializer[E, T <: TraversableOnce[E]](implicit serializer: Zerializer[E, E], canBuild: CanBuild[E, T]):
       SimpleZerializer[T] = {
     new TraversableZerializer(serializer)
   }
