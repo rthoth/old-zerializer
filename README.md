@@ -1,6 +1,8 @@
 # Zerializer
 
-**Zerializer** is a Scala based binary serialization library, it uses [DataInput](https://docs.oracle.com/javase/8/docs/api/index.html?java/io/DataInput.html "See javadoc") and [DataOutput](https://docs.oracle.com/javase/8/docs/api/index.html?java/io/DataOutput.html "See javadoc"). So, let's code!
+*Zerializer* is a Scala based binary serialization library, it uses [DataInput](https://docs.oracle.com/javase/8/docs/api/index.html?java/io/DataInput.html "See javadoc") and [DataOutput](https://docs.oracle.com/javase/8/docs/api/index.html?java/io/DataOutput.html "See javadoc"). So, let's code!
+
+**Important**! *Zerializer* is not a data exchanging serialization library, *Zerializer* is a simple approach to serialize your objects within your application.
 
 First we need to import:
 
@@ -10,7 +12,7 @@ import com.github.rthoth.zerializer._
 
 ## Case Classes
 
-Case classes can to simplify your work, because they provide some *magic methods* like **apply** and **unapply**. But **Zerializer** does not force you to use **case classes**.
+Case classes can to simplify your work, because they provide some *magic methods* like **apply** and **unapply**. But *Zerializer* does not force you to use **case classes**.
 
 ```scala
   case class User(name: String, email: String, age: Int, active: Boolean)
@@ -56,11 +58,11 @@ First we need define a new class.
 And now...
 
 ```scala
-val saleSerializer = new ComposedBuilder()
-	.field[Long]
-	.field[Double]
-	.field[User]
-	.build(Sale.apply, Sale.unapply)
+  val saleSerializer = new ComposedBuilder()
+    .field[Long]
+    .field[Double]
+    .field[User]
+    .build(Sale.apply, Sale.unapply)
 ```
 
 Every `Zerializer` has the follow signature:
@@ -149,7 +151,7 @@ In the sample above `Composed Zerializer` has version information.
 
 ## Self serializing
 
-it's also very common an object to contain fields of the same type and if you would like to use the same *zerializer*? For this propose **Zerializer** has a special zerializer called `LazyZerializer`.
+it's also very common an object to contain fields of the same type and if you would like to use the same *zerializer*? For this propose *Zerializer* has a special zerializer called `LazyZerializer`.
 
 ```scala
   case class Tag(name: String, attributes: Map[String, String], children: Seq[Tag])
@@ -178,7 +180,7 @@ it's also very common an object to contain fields of the same type and if you wo
 
 ## Built-in
 
-Scala has classes like `Option`, `Try` and `Either`. They are useful on many situations and **Zerializer** has special *serializers* for them.
+Scala has classes like `Option`, `Try` and `Either`. They are useful on many situations and *Zerializer* has special *serializers* for them.
 
 ```scala
   case class Essay(title: String, author: String, content: Option[String], approved: Try[Boolean], score: Either[String, Int])
@@ -226,9 +228,9 @@ The header field describes how to deserialize the root object and which fields s
 
 Where:
 
-* **S** is the root information.
-* **F1** to **F22** are fields informations.
-* **VERSION** is a byte serialization version.
+* **root** is your object information.
+* **f1** to **f22** are the fields information.
+* **version** is a byte serialization version.
 
 For each field space and root object there are 2 bits to describe how to deserialize each object. Supported values are:
 

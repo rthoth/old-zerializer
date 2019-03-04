@@ -53,7 +53,7 @@ package object zerializer {
 
     val emptyValue = ""
 
-    def isEmpty(value: String) = value.isEmpty()
+    def isEmpty(value: String): Boolean = value.isEmpty()
 
     def read(input: DataInput): String = input.readUTF()
 

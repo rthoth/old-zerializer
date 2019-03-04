@@ -3,19 +3,17 @@ package com.github.rthoth.zerializer
 import java.io.{ DataInput, DataOutput }
 
 
-class EitherZerializer[L, R](lZerializer: Zerializer[L, L], rZerializer: Zerializer[R, R]) extends SimpleZerializer[Either[L, R]] {
+class EitherZerializer[L, R](lZ: Zerializer[L, L], rZ: Zerializer[R, R]) extends SimpleZerializer[Either[L, R]] {
 
   def emptyValue = throw new ZerializerException.EmptyValue
 
   def isEmpty(value: Either[L, R]) = false
 
   def read(input: DataInput): Either[L, R] = {
-    input.readBoolean() match {
-      case false =>
-        Left(lZerializer.read(input))
-
-      case true =>
-        Right(rZerializer.read(input))
+    if (input.readBoolean()) {
+      Left(lZ.read(input))
+    } else {
+      Right(rZ.read(input))
     }
   }
 
@@ -23,11 +21,11 @@ class EitherZerializer[L, R](lZerializer: Zerializer[L, L], rZerializer: Zeriali
     value match {
       case Left(value) =>
         output.writeBoolean(false)
-        lZerializer.write(value, output)
+        lZ.write(value, output)
 
       case Right(value) =>
         output.writeBoolean(true)
-        rZerializer.write(value, output)
+        rZ.write(value, output)
     }
   }
 }

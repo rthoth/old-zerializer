@@ -1,7 +1,5 @@
 package com.github.rthoth.zerializer
 
-import java.io.IOException
-
 abstract class AnyValZerializer[E <: AnyVal] extends SimpleZerializer[E] {
 
   def emptyValue = throw new ZerializerException.EmptyValue()
