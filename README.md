@@ -178,6 +178,8 @@ it's also very common an object to contain fields of the same type and if you wo
   assert(serializedTag == html)
 ```
 
+**Warning**! *Zerializer* does not handle circular reference!
+
 ## Built-in
 
 Scala has classes like `Option`, `Try` and `Either`. They are useful on many situations and *Zerializer* has special *serializers* for them.
