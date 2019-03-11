@@ -94,16 +94,16 @@ package object zerializer {
     new TryZerializer(serializer, throwableZerializer)
   }
 
-  def mapZerializer[K, V, M <: MapLike[K, V, _]](
-    implicit kZ: Zerializer[K, K], vZ: Zerializer[V, V], canBuild: CanBuild[(K, V), M]
-  ): SimpleZerializer[M] = {
+  def mapZerializer[K, V, M[A, B] <: MapLike[A, B, _]](
+    implicit kZ: Zerializer[K, K], vZ: Zerializer[V, V], canBuild: CanBuild[(K, V), M[K, V]]
+  ): SimpleZerializer[M[K, V]] = {
 
     new MapLikeZerializer(kZ, vZ)
   }
 
-  def traversableZerializer[E, T <: TraversableOnce[E]](
-    implicit serializer: Zerializer[E, E], canBuild: CanBuild[E, T]
-  ): SimpleZerializer[T] = {
+  def traversableZerializer[E, T[X] <: TraversableOnce[X]](
+    implicit serializer: Zerializer[E, E], canBuild: CanBuild[E, T[E]]
+  ): SimpleZerializer[T[E]] = {
 
     new TraversableZerializer(serializer)
   }

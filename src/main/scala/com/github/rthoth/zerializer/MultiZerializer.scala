@@ -1,13 +1,13 @@
 package com.github.rthoth.zerializer
 
-import java.io.{ DataInput, DataOutput, IOException }
-import scala.collection.immutable.{ HashMap, Map }
+import java.io.{DataInput, DataOutput, IOException}
+import scala.collection.immutable.{HashMap, Map}
 
 object MultiZerializer {
 
   protected class Entry[+T](val index: Int, val clazz: Class[_], val serializer: Zerializer[Any, Any])
 
-  class Builder[T] private (entries: Map[Int, Entry[T]]) {
+  class Builder[T] private(entries: Map[Int, Entry[T]]) {
 
     def this() = this(HashMap.empty)
 
@@ -19,16 +19,21 @@ object MultiZerializer {
       }
     }
 
+    def register[V <: T : Manifest](index: Int, value: V): Builder[T] = {
+      register(index, new ValueZerializer(value))
+    }
+
     def build(): MultiZerializer[T] = new MultiZerializer(entries)
   }
+
 }
 
 import MultiZerializer._
 
-class MultiZerializer[T] private (entries: Map[Int, Entry[T]])
-    extends SimpleZerializer[T] {
+class MultiZerializer[T](entries: Map[Int, Entry[T]])
+  extends SimpleZerializer[T] {
 
-  private val reversed = HashMap(entries.map(x => (x._2.clazz.getCanonicalName, x._2)).toSeq:_*)
+  private val reversed = HashMap(entries.map(x => (x._2.clazz.getCanonicalName, x._2)).toSeq: _*)
 
   def emptyValue: T = throw new ZerializerException.EmptyValue()
 

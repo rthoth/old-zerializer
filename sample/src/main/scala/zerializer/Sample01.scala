@@ -58,13 +58,13 @@ object Sample01 extends App {
     .field[String]
     .field[Int]
     .field[String]
-    .field(traversableZerializer[Int, List[Int]])
+    .field(traversableZerializer[Int, List])
     .build(Element.apply, Element.unapply)
 
   implicit val periodicTableZerializer = new ComposedBuilder(Some(20))
     .field[String]
-    .field(traversableZerializer[Element, Queue[Element]])
-    .field(mapZerializer[Int, Element, SortedMap[Int, Element]])
+    .field(traversableZerializer[Element, Queue])
+    .field(mapZerializer[Int, Element, SortedMap])
     .build(PeriodicTable.apply, PeriodicTable.unapply)
 
   val hydrogen = Element("Hydrogen", 1, "IA", 1 :: Nil)
@@ -88,8 +88,8 @@ object Sample01 extends App {
 
     ret = new ComposedBuilder()
       .field[String]
-      .field(mapZerializer[String, String, Map[String, String]])
-      .field(traversableZerializer[Tag, Seq[Tag]])
+      .field(mapZerializer[String, String, Map])
+      .field(traversableZerializer[Tag, Seq])
       .build(Tag.apply, Tag.unapply)
 
     ret

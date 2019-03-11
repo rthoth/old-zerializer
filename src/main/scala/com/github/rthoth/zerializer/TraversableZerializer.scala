@@ -4,15 +4,14 @@ import java.io.{ DataInput, DataOutput, IOException }
 import scala.collection.generic._
 import scala.collection._
 
+class TraversableZerializer[E, T[X] <: TraversableOnce[X]](underlying: Zerializer[E, E])(implicit canBuild: CanBuild[E, T[E]])
+    extends SimpleZerializer[T[E]] {
 
-class TraversableZerializer[E, T <: TraversableOnce[E]](underlying: Zerializer[E, E])(implicit canBuild: CanBuild[E, T])
-    extends SimpleZerializer[T] {
+  val emptyValue: T[E] = canBuild().result()
 
-  val emptyValue: T = canBuild().result()
+  def isEmpty(value: T[E]) = value.isEmpty
 
-  def isEmpty(value: T) = value.isEmpty
-
-  def read(input: DataInput): T = {
+  def read(input: DataInput): T[E] = {
     val size = input.readInt()
 
     if (size > 0) {
@@ -30,7 +29,7 @@ class TraversableZerializer[E, T <: TraversableOnce[E]](underlying: Zerializer[E
     }
   }
   
-  def write(value: T, output: DataOutput): Unit = {
+  def write(value: T[E], output: DataOutput): Unit = {
     output.writeInt(value.size)
 
     for (e <- value)

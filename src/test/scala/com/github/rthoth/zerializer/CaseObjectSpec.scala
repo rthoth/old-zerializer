@@ -30,13 +30,13 @@ class CaseObjectSpec extends Spec {
       .field[Long]
       .field[Boolean]
       .field[Option[User]]
-      .field(mapZerializer[Int, User, Map[Int, User]])
+      .field(mapZerializer[Int, User, Map])
       .build(Sale.apply, Sale.unapply)
 
     implicit val saleListZerializer = new ComposedBuilder[SaleList](Some(102))
       .field[User]
-      .field(traversableZerializer[User, List[User]])
-      .field(traversableZerializer[Sale, Queue[Sale]])
+      .field(traversableZerializer[User, List])
+      .field(traversableZerializer[Sale, Queue])
       .build(SaleList.apply, SaleList.unapply)
 
     val user = User("Einstein", "e@m.c2", 10)

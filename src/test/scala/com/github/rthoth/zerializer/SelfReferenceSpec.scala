@@ -32,7 +32,7 @@ class SelfReferenceSpec extends Spec {
         var serializer = new ComposedBuilder[QuadNode]()
           .field[Long]
           .field[Envelope]
-          .field(traversableZerializer[Int, Seq[Int]])
+          .field(traversableZerializer[Int, Seq])
           .field[Option[QuadNode]](StubZerializer)
           .field[Option[QuadNode]](StubZerializer)
           .field[Option[QuadNode]](StubZerializer)
