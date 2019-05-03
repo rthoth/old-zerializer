@@ -1,6 +1,7 @@
 package com.github.rthoth.zerializer
 
-import java.io.{DataInput, DataOutput, IOException}
+import java.io.{DataInput, DataOutput}
+
 import scala.collection.immutable.{HashMap, Map}
 
 object MultiZerializer {
@@ -28,7 +29,7 @@ object MultiZerializer {
 
 }
 
-import MultiZerializer._
+import com.github.rthoth.zerializer.MultiZerializer._
 
 class MultiZerializer[T](entries: Map[Int, Entry[T]])
   extends SimpleZerializer[T] {
