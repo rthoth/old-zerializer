@@ -1,7 +1,8 @@
 package com.github.rthoth.zerializer
 
-import java.io.{ DataInput, DataOutput, IOException }
-import scala.util.{ Failure, Success, Try }
+import java.io.{DataInput, DataOutput}
+
+import scala.util.{Failure, Success, Try}
 
 class TryZerializer[E](underlying: Zerializer[E, E], throwableSerializer: Zerializer[Throwable, Throwable])
     extends SimpleZerializer[Try[E]] {

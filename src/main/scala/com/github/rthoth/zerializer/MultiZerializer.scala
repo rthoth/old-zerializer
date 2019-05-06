@@ -2,7 +2,10 @@ package com.github.rthoth.zerializer
 
 import java.io.{DataInput, DataOutput}
 
+import com.github.rthoth.zerializer.MultiZerializer._
+
 import scala.collection.immutable.{HashMap, Map}
+
 
 object MultiZerializer {
 
@@ -26,10 +29,8 @@ object MultiZerializer {
 
     def build(): MultiZerializer[T] = new MultiZerializer(entries)
   }
-
 }
 
-import com.github.rthoth.zerializer.MultiZerializer._
 
 class MultiZerializer[T](entries: Map[Int, Entry[T]])
   extends SimpleZerializer[T] {

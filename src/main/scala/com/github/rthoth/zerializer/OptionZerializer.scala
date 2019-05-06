@@ -1,10 +1,10 @@
 package com.github.rthoth.zerializer
 
-import java.io.{ DataInput, DataOutput }
+import java.io.{DataInput, DataOutput}
 
 
 class OptionZerializer[E](underlying: Zerializer[E, E])
-    extends SimpleZerializer[Option[E]] {
+  extends SimpleZerializer[Option[E]] {
 
   val emptyValue: Option[E] = None
 

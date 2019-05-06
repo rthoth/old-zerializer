@@ -1,11 +1,6 @@
 package com.github.rthoth.zerializer
 
 import java.io._
-import java.util.Date
-
-import scala.collection._
-import scala.collection.generic.CanBuild
-import scala.util.{ Failure, Success, Try }
 
 trait Zerializer[-I, +R] {
 

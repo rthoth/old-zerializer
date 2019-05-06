@@ -1,8 +1,9 @@
 package com.github.rthoth.zerializer
 
-import java.io.{ DataInput, DataOutput, IOException }
-import scala.collection.generic._
+import java.io.{DataInput, DataOutput}
+
 import scala.collection._
+import scala.collection.generic._
 
 class TraversableZerializer[E, T[X] <: TraversableOnce[X]](underlying: Zerializer[E, E])(implicit canBuild: CanBuild[E, T[E]])
     extends SimpleZerializer[T[E]] {
